@@ -2,7 +2,7 @@
 
 Hi! 
 
-This is the repo for my "Why Rust?" talk held @ FooCafe in Malmö Sweden in January 2020.
+This is the repo for my "Why Rust?" talk held @ FooCafe in Malmö Sweden in February 2020.
 
 Wasm frontend: https://github.com/yewstack
 

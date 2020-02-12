@@ -50,8 +50,8 @@ fn populated_data() -> [Html; AMOUNT] {
     [
         html! {
             <div>
-                <img src="https://www.rustacean.net/assets/rustacean-orig-noshadow.svg" alt="Ferris" class="ferris-main"/>
-                <img src="https://www.rust-lang.org/static/images/rust-logo-blk.svg" alt="Rust logo" />
+                <img src="/images/ferris_original.svg" alt="Ferris" class="ferris-main"/>
+                <img src="/images/logo_rust.svg" alt="Rust logo" />
             </div>
         },
         html! {
@@ -77,47 +77,47 @@ fn populated_data() -> [Html; AMOUNT] {
         },
         html! {
             <div>
-                <img src="/images/stack_and_heap.png" alt="Stack and heap painting" class="stack-and-heap"/>
+                <img src="/images/code_stack_and_heap.svg" alt="Stack and heap painting" class="stack-and-heap"/>
             </div>
         },
         html! {
             <div>
-                <img src="/images/give_book.png" alt="Stick man give book" class="stick-man"/>
+                <img src="/images/code_give_book.svg" alt="Stick man give book" class="stick-man"/>
                 { colorize("\nfn gives_book() {\n    let book = String::from(\"Carls scribbles\");\n    do_something(book);\n}\n\nfn do_something(book: String) {\n    ...\n}\n " )}
                 {colorize("")}
             </div>
         },
         html! {
             <div>
-                <img src="/images/give_book2.png" alt="Stick man borrow book" class="stick-man"/>
+                <img src="/images/code_give_book2.svg" alt="Stick man borrow book" class="stick-man"/>
                 { colorize("\nfn gives_book() {\n    let book = String::from(\"Carls scribbles\");\n    do_something(book);\n    println!(\"Let's read! {}\", book);\n}\n\nfn do_something(book: String) {\n    ...\n}\n " )}
                 <div class="error-wrapper">
                     <p>{ "Borrow of moved value: `book` E0382"}</p>
-                    <img src="https://doc.rust-lang.org/book/img/ferris/panics.svg" alt="Ferris panics" class="ferris-panic"/>
+                    <img src="/images/ferris_panics.svg" alt="Ferris panics" class="ferris-panic"/>
                 </div>
             </div>
         },
         html! {
             <div>
-                <img src="/images/two_books.png" alt="Stick man clone book" class="stick-man"/>
+                <img src="/images/code_two_books.svg" alt="Stick man clone book" class="stick-man"/>
                 { colorize("\nfn gives_book() {\n    let book = String::from(\"Carls scribbles\");\n    do_something(book.Clone());\n    println!(\"Let's read! {}\", book);\n}\n " )}
             </div>
         },
         html! {
            <div>
-                <img src="/images/read_book.png" alt="Stick man read book" class="stick-man"/>
+                <img src="/images/code_read_book.svg" alt="Stick man read book" class="stick-man"/>
                 { colorize("\nfn gives_book() {\n    let book = String::from(\"Carls scribbles\");\n    do_something(&book);\n    println!(\"Let's read! {}\", book);\n}\n\nfn do_something(book: &String) {\n    ...\n}\n " )}
            </div>
         },
         html! {
            <div>
-                <img src="/images/edit_book.png" alt="Stick man edit book" class="stick-man"/>
+                <img src="/images/code_edit_book.svg" alt="Stick man edit book" class="stick-man"/>
                 { colorize("\nfn gives_book() {\n    let mut book = String::from(\"Carls scribbles\");\n    do_something(&mut book);\n}\n\nfn do_something(book: &mut String) {\n    book.push_str(\"The smurfs are actually evil\");\n}\n " )}
            </div>
         },
         html! {
            <div>
-                <img src="/images/multiple_readers.png" alt="stick man multiple readers" class="stick-man"/>
+                <img src="/images/code_multiple_readers.svg" alt="stick man multiple readers" class="stick-man"/>
                 <ul>
                     <li>{ "Box<T> for allocating values on the heap" } </li>
                     <li>{ "Rc<T>, a reference counting type that enables multiple ownership" } </li>
@@ -127,12 +127,12 @@ fn populated_data() -> [Html; AMOUNT] {
         },
         html! {
             <div>
-                <img src="/images/two_books.png" alt="Stick man two books" class="stick-man"/>
+                <img src="/images/code_two_books.svg" alt="Stick man two books" class="stick-man"/>
                 { colorize("\nfn book_length() {\n    let book1 = String::from(\"Carls scribbles\");\n    let book2 = String::from(\"Carls scribbles longer\");\n    let longest = longest(&book1, &book2);\n    println!(\"something something longest book {longest}\");\n}\n\nfn longest(book1: &String, book2: &String) -> &String {\n    if book1.len() > book2.len() {\n        book1\n    } else {\n        book2\n    }\n}\n ")}
                 <div class="error-wrapper">
                     <p>{ "Missing lifetime specifier E0106" }</p>
                     <p>{ "Expected lifetime parameter" }</p>
-                    <img src="https://doc.rust-lang.org/book/img/ferris/panics.svg" alt="Ferris panics" class="ferris-panic"/>
+                    <img src="/images/ferris_panics.svg" alt="Ferris panics" class="ferris-panic"/>
                 </div>
             </div>
         },
@@ -146,7 +146,7 @@ fn populated_data() -> [Html; AMOUNT] {
                 { colorize("\nfn book_length() {\n    let book1 = String::from(\"Carls scribbles\");\n    let longest = {\n        let book2 = String::from(\"Carls scribbles longer\");\n        longest(&book1, &book2);\n    }\n    println!(\"something something longest book {longest}\");\n}\n ")}
                 <div class="error-wrapper">
                     <p>{ "book2 does not live long enough E0597" }</p>
-                    <img src="https://doc.rust-lang.org/book/img/ferris/panics.svg" alt="Ferris panics" class="ferris-panic"/>
+                    <img src="/images/ferris_panics.svg" alt="Ferris panics" class="ferris-panic"/>
                 </div>
            </div>
         },
@@ -309,16 +309,15 @@ fn populated_data() -> [Html; AMOUNT] {
         },
         html! {
             <div>
-                <img src="https://iseif.dev/wp-content/uploads/2019/06/vscode-logo.png" alt="VsCode" class="small-logo"/>
-                <img src="http://www.gjermundbjaanes.com/wp-content/uploads/2015/10/npm-logo.png" alt="Npm" class="small-logo" />
-
-                <img src="https://www.cloudflare.com/img/logo-cloudflare-dark.svg" alt="CloudFlare" class="big-logo" />
-                <img src="https://s.aolcdn.com/hss/storage/midas/fb4f84947f119d7a145888857db46d2c/204825462/mozilla.jpg" alt="Mozilla" class="big-logo" />
-                <img src="https://s3-media0.fl.yelpcdn.com/assets/public/default.yelp_design_web.yji-b085a608c15f110ce750ccef3e1e1db0.png" alt="Yelp" class="small-logo" />
-                <img src="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31" alt="Microsoft" class="small-logo" />
-                <img src="https://cfl.dropboxstatic.com/static/images/logo_catalog/glyph_m1-vflCrXgzt.svg" alt="Dropbox" class="small-logo"/>
-                <img src="https://www.google.se/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="Google" class="small-logo" />
-                <img src="https://upload.wikimedia.org/wikipedia/fr/thumb/0/05/Discord.svg/1200px-Discord.svg.png" alt="Discord" class="big-logo" />
+                <img src="/images/logo_vscode.png" alt="VsCode" class="small-logo"/>
+                <img src="/images/logo_npm.png" alt="Npm" class="small-logo" />
+                <img src="/images/logo_cloudflare.svg" alt="CloudFlare" class="big-logo" />
+                <img src="/images/logo_mozilla.png" alt="Mozilla" class="big-logo" />
+                <img src="/images/logo_yelp.png" alt="Yelp" class="small-logo" />
+                <img src="/images/logo_microsoft.png" alt="Microsoft" class="small-logo" />
+                <img src="/images/logo_dropbox.svg" alt="Dropbox" class="small-logo"/>
+                <img src="/images/logo_google.png" alt="Google" class="small-logo" />
+                <img src="/images/logo_discord.png" alt="Discord" class="big-logo" />
 
             </div>
         },

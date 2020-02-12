@@ -82,7 +82,7 @@ impl Component for SlidesModel {
         // instead of being sent through the router.
         self.router
             .send(RouteRequest::ChangeRouteNoBroadcast(Route::from(format!(
-                "/slides/{}",
+                "/slides?num={}",
                 self.props.number
             ))));
         true

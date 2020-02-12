@@ -6,8 +6,8 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 #[derive(Debug, Switch, Clone)]
-pub enum AppRoutes {
-    #[to = "/slides/{num}"]
+enum AppRoute {
+    #[to = "/slides?num={n}"]
     Slides(usize),
     #[to = "/"]
     Home,
@@ -24,14 +24,17 @@ impl Component for AppModel {
     }
 
     fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
+        false
     }
 
     fn view(&self) -> Html {
         html! {
             <div class="flex-wrapper">
                 <div class="menu-wrapper">
-                    { self.get_menu() }
+                    <nav>
+                        <RouterButton<AppRoute> route = AppRoute::Home > { "Home" } </RouterButton<AppRoute>>
+                        <RouterButton<AppRoute> route = AppRoute::Slides(0) > { "Slide" } </RouterButton<AppRoute>>
+                    </nav>
                 </div>
                 <div class="main-wrapper">
                      { self.get_router() }
@@ -42,21 +45,15 @@ impl Component for AppModel {
 }
 
 impl AppModel {
-    fn get_menu(&self) -> Html {
-        html! {
-            <nav>
-                <RouterButton<AppRoutes> route = AppRoutes::Home > { "Home" } </RouterButton<AppRoutes>>
-                <RouterButton<AppRoutes> route = AppRoutes::Slides(0) > { "Slide" } </RouterButton<AppRoutes>>
-            </nav>
-        }
-    }
-
     fn get_router(&self) -> Html {
         html! {
-            <Router<AppRoutes, ()>
-                render = Router::render(|switch: AppRoutes| match switch {
-                    AppRoutes::Slides(num) => html! {<SlidesModel number = num /> },
-                    AppRoutes::Home => html! { <HomeModel /> }
+            <Router<AppRoute>
+                render = Router::render(|switch: AppRoute| match switch {
+                    AppRoute::Slides(num) => html! {<SlidesModel number = num /> },
+                    _ => html! { <HomeModel /> },
+                })
+                redirect = Router::redirect(|_: Route| {
+                    AppRoute::Home
                 })
             />
         }
