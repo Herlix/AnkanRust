@@ -1,0 +1,14 @@
+
+**/target
+**/*.lock
+**/*.rs.bk
+**/bin
+**/pkg
+**/dist
+**/wasm-pack.log
+**/node_modules
+
+
+#Added by cargo
+
+/target
