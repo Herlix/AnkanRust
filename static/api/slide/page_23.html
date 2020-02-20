@@ -1,0 +1,17 @@
+<div class="slides--wrapper__content">
+    <h1>Async programming is here</h1>
+    <p>And with (almost) no penalty in performance</p>
+    <pre><code class="language-rust"> 
+        <span class="token keyword">async</span> <span class="token keyword">fn</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> Result<span class="token operator">&lt;</span>String<span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token function">Ok</span><span class="token punctuation">(</span><span class="token punctuation">...</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        
+        <span class="token attribute attr-name">#[tokio::main]</span>
+        <span class="token keyword">fn</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> Result<span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span><span class="token punctuation">{</span>
+            <span class="token keyword">if</span> ler <span class="token function">Ok</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">await</span> <span class="token punctuation">{</span>
+                <span class="token punctuation">...</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">Ok</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    </code></pre>
+</div>

@@ -1,0 +1,23 @@
+<div class="slides--wrapper__content">
+    <img src="/images/code_give_book2.svg" alt="Stick man borrow book" class="stick-man" />
+
+    <pre>
+        <code class="language-rust">
+            <span class="token keyword">fn</span> <span class="token function">gives_book</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">let</span> book <span class="token operator">=</span> String<span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Carls scribbles"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">do_something</span><span class="token punctuation">(</span>book<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"Let's read! {}"</span><span class="token punctuation">,</span> book<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            
+            <span class="token keyword">fn</span> <span class="token function">do_something</span><span class="token punctuation">(</span>book<span class="token punctuation">:</span> String<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token punctuation">...</span>
+            <span class="token punctuation">}</span>
+        </code>
+    </pre>
+
+
+    <div class="error-wrapper">
+        <p>Borrow of moved value: `book` E0382</p>
+        <img src="/images/ferris_panics.svg" alt="Ferris panics" class="ferris-panic" />
+    </div>
+</div>

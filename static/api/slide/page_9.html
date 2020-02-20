@@ -1,0 +1,14 @@
+<div class="slides--wrapper__content">
+    <img src="/images/code_edit_book.svg" alt="Stick man edit book" class="stick-man" />
+
+    <pre><code class="language-rust"> 
+        <span class="token keyword">fn</span> <span class="token function">gives_book</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> <span class="token keyword">mut</span> book <span class="token operator">=</span> String<span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Carls scribbles"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">do_something</span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">mut</span> book<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        
+        <span class="token keyword">fn</span> <span class="token function">do_something</span><span class="token punctuation">(</span>book<span class="token punctuation">:</span> <span class="token operator">&amp;</span><span class="token keyword">mut</span> String<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            book<span class="token punctuation">.</span><span class="token function">push_str</span><span class="token punctuation">(</span><span class="token string">"The smurfs are actually evil"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    </code></pre>
+</div>

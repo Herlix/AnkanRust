@@ -29,14 +29,14 @@ impl Component for AppModel {
 
     fn view(&self) -> Html {
         html! {
-            <div class="flex-wrapper">
-                <div class="menu-wrapper">
+            <div class="wrapper">
+                <div class="wrapper__menu">
                     <nav>
                         <RouterButton<AppRoute> route = AppRoute::Home > { "Home" } </RouterButton<AppRoute>>
                         <RouterButton<AppRoute> route = AppRoute::Slides(0) > { "Slide" } </RouterButton<AppRoute>>
                     </nav>
                 </div>
-                <div class="main-wrapper">
+                <div class="wrapper__content">
                      { self.get_router() }
                 </div>
             </div>

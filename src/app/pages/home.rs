@@ -17,9 +17,9 @@ impl Component for HomeModel {
 
     fn view(&self) -> Html {
         html! {
-             <div class="home-wrapper">
-                <div class="home-content">
-                    <img src="/images/me.png" alt="Portrait" class="main-image"/>
+             <div class="wrapper--home">
+                <div class="wrapper--home__content">
+                    <img src="/images/me.png" alt="Portrait" class="img__portrait"/>
                     <h1>{"Alexander Herlin"}</h1>
                 </div>
             </div>

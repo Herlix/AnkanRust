@@ -1,0 +1,26 @@
+<div class="slides--wrapper__content">
+
+  <pre><code class="language-rust"> 
+        <span class="token keyword">fn</span> <span class="token function">multi_producer_single_consumer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> <span class="token punctuation">(</span>transmitter<span class="token punctuation">,</span> receiver<span class="token punctuation">)</span> <span class="token operator">=</span> mpsc<span class="token punctuation">::</span><span class="token function">channel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            thread<span class="token punctuation">::</span><span class="token function">spawn</span><span class="token punctuation">(</span><span class="token keyword">move</span> <span class="token closure-params"><span class="token punctuation">|</span><span class="token punctuation">|</span></span> <span class="token punctuation">{</span>
+              <span class="token keyword">let</span> values <span class="token operator">=</span> <span class="token function">vec!</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+              thread<span class="token punctuation">::</span><span class="token function">sleep</span><span class="token punctuation">(</span>Duration<span class="token punctuation">::</span><span class="token function">from_millis</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+              transmitter<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>values<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">expect</span><span class="token punctuation">(</span><span class="token string">"Could not transmit values"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          
+            <span class="token keyword">let</span> values <span class="token operator">=</span> receiver<span class="token punctuation">.</span><span class="token function">recv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">expect</span><span class="token punctuation">(</span><span class="token string">"Could not receive values"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> x <span class="token keyword">in</span> values <span class="token punctuation">{</span>
+              <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"Value: {}"</span><span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+    </code></pre>
+  <div class="result-list">
+    <li>Value: 0​</li>
+    <li>Value: 1​</li>
+    <li>Value: 2​</li>
+    <li>Value: 3​</li>
+    <li>Value: 4​</li>
+    <li>Value: 5​</li>
+  </div>
+</div>

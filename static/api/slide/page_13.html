@@ -1,0 +1,19 @@
+<div class="slides--wrapper__content">
+
+    <pre><code class="language-rust"> 
+
+        <span class="token keyword">fn</span> <span class="token function">book_length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> book1 <span class="token operator">=</span> String<span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Carls scribbles"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">let</span> longest <span class="token operator">=</span> <span class="token punctuation">{</span>
+                <span class="token keyword">let</span> book2 <span class="token operator">=</span> String<span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Carls scribbles longer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">longest</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>book1<span class="token punctuation">,</span> <span class="token operator">&amp;</span>book2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"something something longest book {longest}"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    </code></pre>
+
+    <div class="error-wrapper">
+        <p>book2 does not live long enough E0597</p>
+        <img src="/images/ferris_panics.svg" alt="Ferris panics" class="ferris-panic" />
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="slides--wrapper__content">
+    <h1>Traits, mods, structs</h1>
+    <p>Interface, namespace, class</p>
+    <pre>
+        <code class="language-rust too-much-code"> 
+            <span class="token keyword">fn</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">let</span> animals<span class="token punctuation">:</span> Vec<span class="token operator">&lt;</span>Box<span class="token operator">&lt;</span><span class="token keyword">dyn</span> Animal<span class="token operator">>></span> <span class="token operator">=</span> <span class="token function">vec!</span><span class="token punctuation">[</span>
+                    Box<span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span>Chicken<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    Box<span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span>Cow <span class="token punctuation">{</span>color<span class="token punctuation">:</span> <span class="token string">"blue"</span><span class="token punctuation">.</span><span class="token function">to_owned</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+                <span class="token punctuation">]</span><span class="token punctuation">;</span>
+                animals<span class="token punctuation">.</span><span class="token function">iter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">for_each</span><span class="token punctuation">(</span><span class="token operator">|</span>x<span class="token operator">|</span> x<span class="token punctuation">.</span><span class="token function">do_your_thing</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            
+            <span class="token keyword">mod</span> namespace <span class="token punctuation">{</span>
+                <span class="token keyword">pub</span> <span class="token keyword">trait</span> Animal <span class="token punctuation">{</span>
+                    <span class="token keyword">fn</span> <span class="token function">do_your_thing</span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">self</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            
+                <span class="token keyword">pub</span> <span class="token keyword">struct</span> Chicken<span class="token punctuation">;</span>
+            
+                <span class="token keyword">pub</span> <span class="token keyword">struct</span> Cow <span class="token punctuation">{</span>
+                    <span class="token keyword">pub</span> color<span class="token punctuation">:</span> String<span class="token punctuation">,</span>
+                <span class="token punctuation">}</span>
+            
+                <span class="token keyword">impl</span> Animal <span class="token keyword">for</span> Chicken<span class="token punctuation">{</span>
+                    <span class="token keyword">fn</span> <span class="token function">do_your_thing</span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">self</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"cluck cluck cluck"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            
+                <span class="token keyword">impl</span> Animal <span class="token keyword">for</span> Cow <span class="token punctuation">{</span>
+                    <span class="token keyword">fn</span> <span class="token function">do_your_thing</span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">self</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"the {} cow says Moo"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>color<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        </code>
+    </pre>
+
+
+</div>

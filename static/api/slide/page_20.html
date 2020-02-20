@@ -1,0 +1,25 @@
+<div class="slides--wrapper__content">
+    <pre><code class="language-rust"> 
+        <span class="token keyword">fn</span> <span class="token function">use_option</span><span class="token punctuation">(</span>arr<span class="token punctuation">:</span> Vec<span class="token operator">&lt;</span>usize<span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> exists <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// &lt;- Some(5)</span>
+            <span class="token keyword">let</span> nope <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">98</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// &lt;- None</span>
+            <span class="token keyword">match</span><span class="token punctuation">(</span>exists<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">Some</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"The value is: {}"</span><span class="token punctuation">,</span> val<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        
+        <span class="token keyword">fn</span> <span class="token function">use_result</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> file <span class="token operator">=</span> File<span class="token punctuation">::</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token string">"...SomePath"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// &lt;-- Err(std::io::error::Error)</span>
+            <span class="token keyword">if</span> <span class="token keyword">let</span> <span class="token function">Ok</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span> <span class="token operator">=</span> file <span class="token punctuation">{</span>
+                <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"Content: {}"</span><span class="token punctuation">,</span> val<span class="token punctuation">)</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"The file does not exist, if let Ok discarded the error, to bad"</span><span class="token punctuation">)</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+    </code></pre>
+
+    <div class="error-wrapper">
+        <p>Match must be exhaustive [E0004]</p>
+    </div>
+</div>
