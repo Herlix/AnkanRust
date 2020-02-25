@@ -1,3 +1,4 @@
+
 use log::info;
 use stdweb::js;
 use stdweb::web::document;
@@ -14,7 +15,7 @@ use yew::{
 use yew_router::agent::RouteRequest;
 use yew_router::prelude::*;
 
-const AMOUNT: usize = 29;
+const MAX_COUNT: usize = 29;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct SlidesProps {
@@ -30,15 +31,14 @@ pub struct SlidesModel {
     ft: Option<FetchTask>,
     fetch_service: FetchService,
     fetching: bool,
-    smooth: Option<String>,
+    data: Option<String>,
 }
 
 pub enum SlideMsg {
     Right,
     Left,
     NoOp,
-    FetchReady(Result<String, failure::Error>),
-    FetchData,
+    FetchReady(Option<String>),
 }
 
 impl Component for SlidesModel {
@@ -46,7 +46,6 @@ impl Component for SlidesModel {
     type Properties = SlidesProps;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        info!("SHot");
         let handler = KeyboardService::register_key_up(
             &document().body().unwrap(),
             link.callback(|x: KeyUpEvent| match x.key().as_str() {
@@ -57,10 +56,10 @@ impl Component for SlidesModel {
         );
         SlidesModel {
             props,
-            router: RouteAgent::bridge(link.callback(|_| SlideMsg::FetchData)),
+            router: RouteAgent::bridge(link.callback(|_| SlideMsg::NoOp)),
             link,
             handler,
-            smooth: None,
+            data: None,
             ft: None,
             fetch_service: FetchService::new(),
             fetching: false,
@@ -72,38 +71,43 @@ impl Component for SlidesModel {
         self.ft = Some(self.fetch_slide(self.props.number));
         self.colorize(
             r#"
-let m = "Hello World!";
-println!("{}", m);
-        "#,
+fn main() {
+    let m = "Hello World!";
+    println!("{}", m);
+}"#,
         );
         false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            SlideMsg::FetchData => {
-                self.fetching = true;
-            }
             SlideMsg::FetchReady(res) => {
                 self.fetching = false;
-                self.smooth = if let Ok(s) = res { Some(s) } else { None };
-                self.router
-                    .send(RouteRequest::ChangeRouteNoBroadcast(Route::from(format!(
-                        "/slides?num={}",
-                        self.props.number
-                    ))));
+                match res {
+                    Some(s) => {
+                        self.data = Some(s);
+                        self.router
+                            .send(RouteRequest::ChangeRouteNoBroadcast(Route::from(format!(
+                                "/slides?num={}",
+                                self.props.number
+                            ))));
+                    }
+                    None => {}
+                }
             }
             SlideMsg::Left => {
                 if self.props.number > 0 {
                     self.props.number = self.props.number - 1;
                 }
+                self.fetching = true;
                 self.ft = Some(self.fetch_slide(self.props.number));
             }
             SlideMsg::Right => {
-                if self.props.number < AMOUNT - 1 {
+                if self.props.number != MAX_COUNT {
                     self.props.number = self.props.number + 1;
+                    self.fetching = true;
+                    self.ft = Some(self.fetch_slide(self.props.number));
                 }
-                self.ft = Some(self.fetch_slide(self.props.number));
             }
             SlideMsg::NoOp => return false,
         }
@@ -116,10 +120,10 @@ println!("{}", m);
             <div class="slides--wrapper">
                 { self.view_data() }
                 <div class="slides-navigation">
-                    <button class="left" onclick=self.link.callback(|_| SlideMsg::Left)>
-                        <i class="arrow arrow-left"></i>
+                    <button disabled={ self.props.number == 0 } class="left" onclick=self.link.callback(|_| SlideMsg::Left) style={if self.props.number == 0 {"visibility:hidden;"} else {"visibility:visible;"}}>
+                        <i  class="arrow arrow-left"></i>
                     </button>
-                    <button class="right" onclick=self.link.callback(|_| SlideMsg::Right)>
+                    <button disabled={ self.props.number == MAX_COUNT } class="right" onclick=self.link.callback(|_| SlideMsg::Right) style={if self.props.number == MAX_COUNT {"visibility:hidden;"} else {"visibility:visible;"}}>
                         <i class="arrow arrow-right"></i>
                     </button>
                 </div>
@@ -130,10 +134,10 @@ println!("{}", m);
 
 impl SlidesModel {
     fn view_data(&self) -> Html {
-        let v = if let Some(value) = &self.smooth {
+        let v = if let Some(value) = &self.data {
             value
         } else {
-            "<p>Data hasn't fetched yet.</p>"
+            "<div><p>Data hasn't fetched yet.</p></div>"
         };
         let node = Node::from_html(v).expect("Could not generate Html object");
         VNode::VRef(node)
@@ -146,9 +150,9 @@ impl SlidesModel {
                     let (meta, data) = response.into_parts();
                     // info!("META: {:?}, {:?}", meta, data);
                     if meta.status.is_success() {
-                        SlideMsg::FetchReady(data)
+                        SlideMsg::FetchReady(Some(data.unwrap()))
                     } else {
-                        SlideMsg::NoOp
+                        SlideMsg::FetchReady(None)
                     }
                 });
         let request = Request::get(format!("/api/slide/page_{}.html", slide))

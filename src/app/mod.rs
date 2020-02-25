@@ -1,7 +1,7 @@
-mod pages;
+mod components;
 
-use crate::app::pages::home::HomeModel;
-use crate::app::pages::slides::SlidesModel;
+use crate::app::components::home::HomeModel;
+use crate::app::components::slides::SlidesModel;
 use yew::prelude::*;
 use yew_router::prelude::*;
 

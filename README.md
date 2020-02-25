@@ -18,6 +18,12 @@ Why make life easy? ;)
 yarn && yarn build && yarn start:dev
 ```
 
+### ☝️ Deployment
+
+```
+cargo web deploy
+```
+
 ## 🔋 Batteries Included
 
 * [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating

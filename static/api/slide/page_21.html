@@ -1,31 +1,28 @@
 <div class="slides--wrapper__content">
     <h1>Rust has a lot of syntax sugar, and it helps!</h1>
     <p>Dealing with all cases can be tedious, use ? to pass errors upwards</p>
-    <pre><code class="language-rust">
-        <span class="token keyword">fn</span> <span class="token function">use_result</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> Result<span class="token operator">&lt;</span>File<span class="token punctuation">,</span> Error<span class="token operator">></span> <span class="token punctuation">{</span>
-            <span class="token keyword">let</span> file <span class="token operator">=</span> File<span class="token punctuation">::</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token string">"...SomePath"</span><span class="token punctuation">)</span><span class="token operator">?</span> <span class="token comment">// &lt;-- Err(std::io::error::Error)</span>
-        <span class="token punctuation">}</span>
-    </code></pre>
 
-    <pre><code class="language-rust>
-        <span class="token keyword">fn</span> <span class="token function">patterns_loops</span><span class="token punctuation">(</span>arr<span class="token punctuation">:</span> Vec<span class="token operator">&lt;</span>usize<span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">-></span> Result<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span> <span class="token punctuation">{</span>
-            <span class="token keyword">let</span> <span class="token keyword">mut</span> results <span class="token operator">=</span> Vec<span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">for</span> v <span class="token keyword">in</span> arr <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token keyword">let</span> <span class="token function">Some</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">=</span> v <span class="token punctuation">{</span>
-                    <span class="token keyword">let</span> r <span class="token operator">=</span> <span class="token keyword">match</span> x <span class="token punctuation">{</span>
+    <pre>
+        <code class="language-rust">            
+            <span class="token keyword">fn</span> <span class="token function">patterns_loops</span><span class="token punctuation">(</span>arr<span class="token punctuation">:</span> Vec<span class="token operator">&lt;</span>usize<span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">-></span> Result<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span> <span class="token punctuation">{</span>
+                <span class="token keyword">let</span> <span class="token keyword">mut</span> results <span class="token operator">=</span> Vec<span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">for</span> v <span class="token keyword">in</span> arr <span class="token punctuation">{</span>
+                    <span class="token keyword">let</span> r <span class="token operator">=</span> <span class="token keyword">match</span> v <span class="token punctuation">{</span>
                         <span class="token number">0</span> <span class="token operator">=></span> <span class="token string">"No"</span><span class="token punctuation">,</span>
                         <span class="token number">1</span> <span class="token operator">|</span> <span class="token number">2</span> <span class="token operator">=></span> <span class="token string">"1 or 2"</span><span class="token punctuation">,</span>
-                        _ <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">*</span>y <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token string">"Even value"</span><span class="token punctuation">,</span>
-                        _ <span class="token operator">=></span> <span class="token string">"Nope, no match found"</span>
+                        _ <span class="token keyword">if</span> <span class="token punctuation">(</span>v <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token string">"Even value"</span><span class="token punctuation">,</span>
+                        _ <span class="token operator">=></span> <span class="token string">"Nope, no match found"</span><span class="token punctuation">,</span>
                     <span class="token punctuation">}</span><span class="token punctuation">;</span>
                     results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">;</span>
                 <span class="token punctuation">}</span>
+                <span class="token keyword">let</span> res <span class="token operator">=</span> results
+                    <span class="token punctuation">.</span><span class="token function">iter</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token operator">|</span>x<span class="token operator">|</span> <span class="token operator">!</span>x<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span><span class="token string">"no"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token operator">|</span>v<span class="token operator">|</span> v<span class="token punctuation">.</span><span class="token function">to_string</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            
+                <span class="token function">Ok</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
             <span class="token punctuation">}</span>
-            var res <span class="token operator">=</span> results
-                <span class="token punctuation">.</span><span class="token function">iter</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token operator">|</span>x<span class="token operator">|</span> <span class="token operator">!</span>x<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span><span class="token string">"no"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">Ok</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
-        <span class="token punctuation">}</span>
-     </code></pre>
+        </code>
+    </pre>
 </div>
