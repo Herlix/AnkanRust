@@ -5,6 +5,7 @@ use web_logger::Config;
 mod app;
 mod components;
 mod pages;
+mod switch;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.

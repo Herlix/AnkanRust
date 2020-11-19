@@ -30,6 +30,7 @@ default = ["console_error_panic_hook"]
 [dependencies]
 yew = "0.17"
 yew-router = "0.14"
+yewtil = "0.3"
 wasm-bindgen = "0.2"
 anyhow = "1.0"
 web-sys="0.3"
