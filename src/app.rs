@@ -1,7 +1,10 @@
-use crate::switch::{AppAnchor, AppRoute, AppRouter};
 use crate::{
     pages::home::HomeModel, pages::not_found::PageNotFound, pages::slides::SlidesModel,
     switch::UrlSwitch,
+};
+use crate::{
+    slides_data::SLIDES,
+    switch::{AppAnchor, AppRoute, AppRouter},
 };
 use yew::prelude::*;
 use yew_router::{prelude::*, switch::Permissive};
@@ -73,6 +76,20 @@ impl AppModel {
         } = *self;
 
         let active_class = if navbar_active { "is-active" } else { "" };
+
+        let pages: Vec<Html> = SLIDES
+            .iter()
+            .map(|x| {
+                html! {
+                    <a class="navbar-item">
+                    <AppAnchor classes="navbar-item" route=AppRoute::SlidesName(x.slug.to_string())>
+                        { x.title }
+                    </AppAnchor>
+                </a>
+                }
+            })
+            .collect();
+
         html! {
             <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
                 <div class="navbar-brand">
@@ -93,20 +110,13 @@ impl AppModel {
                         <AppAnchor classes="navbar-item" route=AppRoute::Home>
                             { "Home" }
                         </AppAnchor>
-                        <AppAnchor classes="navbar-item" route=AppRoute::Slides(0)>
-                            { "Posts" }
-                        </AppAnchor>
 
                         <div class="navbar-item has-dropdown is-hoverable">
                             <a class="navbar-link">
-                                { "More" }
+                                { "Slides" }
                             </a>
                             <div class="navbar-dropdown">
-                                <a class="navbar-item">
-                                    <AppAnchor classes="navbar-item" route=AppRoute::Slides(0)>
-                                        { "Meet the authors" }
-                                    </AppAnchor>
-                                </a>
+                               { for pages }
                             </div>
                         </div>
                     </div>
@@ -131,8 +141,19 @@ impl AppModel {
             AppRoute::Home => {
                 html! { <HomeModel/> }
             }
-            AppRoute::Slides(n) => {
-                html! { <SlidesModel number=n /> }
+            AppRoute::SlidesNumber(n) => {
+                if let Some(v) = SLIDES.get(n) {
+                    html! { <SlidesModel slide=v /> }
+                } else {
+                    html! { <PageNotFound route=Some(format!("/slides/{}", n)) /> }
+                }
+            }
+            AppRoute::SlidesName(n) => {
+                if let Some(v) = SLIDES.iter().find(|x| x.slug.to_string() == n) {
+                    html! { <SlidesModel slide=v /> }
+                } else {
+                    html! { <PageNotFound route=Some(format!("/slides/{}", n)) /> }
+                }
             }
             AppRoute::PageNotFound(Permissive(route)) => {
                 html! { <PageNotFound route=route /> }

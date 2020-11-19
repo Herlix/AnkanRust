@@ -4,8 +4,10 @@ use yew_router::{prelude::*, switch::Permissive};
 
 #[derive(Debug, Switch, Clone)]
 pub enum AppRoute {
-    #[to = "/slides/{n}"]
-    Slides(usize),
+    #[to = "/slides/{num}"]
+    SlidesNumber(usize),
+    #[to = "/slides/{name}"]
+    SlidesName(String),
     #[to = "/page-not-found"]
     PageNotFound(Permissive<String>),
     #[to = "/!"]

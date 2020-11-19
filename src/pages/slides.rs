@@ -1,40 +1,33 @@
 use log::info;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsValue;
-use web_sys::{KeyboardEvent, Node};
-use yew::services::fetch::{FetchTask, Request, Response};
+use web_sys::KeyboardEvent;
 use yew::services::keyboard::{KeyListenerHandle, KeyboardService};
-use yew::services::FetchService;
-use yew::virtual_dom::VNode;
-use yew::{
-    format::Nothing, html, Bridge, Bridged, Component, ComponentLink, Html, Properties,
-    ShouldRender,
-};
-use yew_router::agent::RouteRequest;
-use yew_router::prelude::*;
+use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew_router::{agent::RouteRequest, prelude::*};
 
-const MAX_COUNT: usize = 29;
+use crate::{
+    slides_data::{Slide, SLIDES},
+    switch::AppRoute,
+};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct SlidesProps {
-    pub number: usize,
+    pub slide: Slide<'static>,
 }
 
 pub struct SlidesModel {
     props: SlidesProps,
-    router: Box<dyn Bridge<RouteAgent>>,
+    number: usize,
+    route_dispatcher: RouteAgentDispatcher,
     link: ComponentLink<Self>,
-    handler: KeyListenerHandle,
-    ft: Option<Result<FetchTask, anyhow::Error>>,
-    fetching: bool,
-    data: Option<String>,
+    keyboard_handle: KeyListenerHandle,
 }
 
 pub enum SlideMsg {
     Right,
     Left,
     NoOp,
-    FetchReady(Option<String>),
 }
 
 impl Component for SlidesModel {
@@ -51,132 +44,82 @@ impl Component for SlidesModel {
             _ => SlideMsg::NoOp,
         });
 
-        let handler = KeyboardService::register_key_press(&document, callback);
-
-        let mut res = SlidesModel {
+        let keyboard_handle = KeyboardService::register_key_press(&document, callback);
+        let number = SLIDES
+            .iter()
+            .position(|x| x.slug == props.slide.slug)
+            .unwrap_or(0);
+        let mut result = SlidesModel {
             props,
-            router: RouteAgent::bridge(link.callback(|_| SlideMsg::NoOp)),
+            number,
+            route_dispatcher: RouteAgentDispatcher::new(),
             link,
-            handler,
-            data: None,
-            ft: None,
-            fetching: false,
+            keyboard_handle,
         };
-        res.ft = Some(res.fetch_slide(res.props.number));
-        res
+        result.update_route();
+        result
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            SlideMsg::FetchReady(res) => {
-                self.fetching = false;
-                match res {
-                    Some(s) => {
-                        self.data = Some(s);
-                        self.router
-                            .send(RouteRequest::ChangeRouteNoBroadcast(Route::from(format!(
-                                "/slides/{}",
-                                self.props.number
-                            ))));
-                    }
-                    None => {}
-                }
-            }
             SlideMsg::Left => {
-                if self.props.number > 0 {
-                    self.props.number = self.props.number - 1;
+                if self.number > 0 {
+                    self.number = self.number - 1;
+                    self.props.slide = SLIDES.get(self.number).unwrap().clone();
+                    self.update_route();
                 }
-                self.fetching = true;
-                self.ft = Some(self.fetch_slide(self.props.number));
+                true
             }
             SlideMsg::Right => {
-                if self.props.number != MAX_COUNT {
-                    self.props.number = self.props.number + 1;
-                    self.fetching = true;
-                    self.ft = Some(self.fetch_slide(self.props.number));
+                if self.number != SLIDES.len() {
+                    self.number = self.number + 1;
+                    self.props.slide = SLIDES.get(self.number).unwrap().clone();
+                    self.update_route();
                 }
+                true
             }
-            SlideMsg::NoOp => return false,
+            SlideMsg::NoOp => false,
         }
-
-        true
     }
 
     fn view(&self) -> Html {
         html! {
-            <div class="slides--wrapper">
-                { self.view_data() }
-                <div class="slides-navigation">
-                    <button disabled={ self.props.number == 0 } class="left" onclick=self.link.callback(|_| SlideMsg::Left) style={if self.props.number == 0 {"visibility:hidden;"} else {"visibility:visible;"}}>
-                        <i  class="arrow arrow-left"></i>
-                    </button>
-                    <button disabled={ self.props.number == MAX_COUNT } class="right" onclick=self.link.callback(|_| SlideMsg::Right) style={if self.props.number == MAX_COUNT {"visibility:hidden;"} else {"visibility:visible;"}}>
-                        <i class="arrow arrow-right"></i>
-                    </button>
-                </div>
-            </div>
+            <>
+            </>
+            // <div class="slides--wrapper">
+            //     { self.view_data() }
+            //     <div class="slides-navigation">
+            //         <button disabled={ self.props.number == 0 } class="left" onclick=self.link.callback(|_| SlideMsg::Left) style={if self.props.number == 0 {"visibility:hidden;"} else {"visibility:visible;"}}>
+            //             <i  class="arrow arrow-left"></i>
+            //         </button>
+            //         <button disabled={ self.props.number == MAX_COUNT } class="right" onclick=self.link.callback(|_| SlideMsg::Right) style={if self.props.number == MAX_COUNT {"visibility:hidden;"} else {"visibility:visible;"}}>
+            //             <i class="arrow arrow-right"></i>
+            //         </button>
+            //     </div>
+            // </div>
         }
     }
 
     fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        self.colorize(
-            r#"
-        fn main() {
-            let m = "Hello World!";
-            println!("{}", m);
-        }"#,
-        );
-
         // Should only return "true" if new properties are different to
         // previously received properties.
         // This component has no properties so we will always return "false".
         false
     }
+
+    fn rendered(&mut self, _first_render: bool) {}
+
+    fn destroy(&mut self) {}
 }
 
 impl SlidesModel {
-    fn view_data(&self) -> Html {
-        let v = if let Some(value) = &self.data {
-            value
-        } else {
-            "<div><p>Data hasn't fetched yet.</p></div>"
-        };
-
-        let js_svg = {
-            let div = web_sys::window()
-                .unwrap()
-                .document()
-                .unwrap()
-                .create_element("div")
-                .unwrap();
-            div.set_inner_html(v);
-            div
-        };
-
-        VNode::VRef(Node::from(js_svg))
+    fn update_route(&mut self) {
+        let route = AppRoute::SlidesName(self.props.slide.slug.to_string());
+        self.route_dispatcher
+            .send(RouteRequest::ChangeRoute(route.into_route()));
     }
-
-    fn fetch_slide(&mut self, slide: usize) -> Result<FetchTask, anyhow::Error> {
-        let callback =
-            self.link
-                .callback(move |response: Response<Result<String, anyhow::Error>>| {
-                    let (meta, data) = response.into_parts();
-                    // info!("META: {:?}, {:?}", meta, data);
-                    if meta.status.is_success() {
-                        SlideMsg::FetchReady(Some(data.unwrap()))
-                    } else {
-                        SlideMsg::FetchReady(None)
-                    }
-                });
-        let request = Request::get(format!("/api/slide/page_{}.html", slide))
-            .body(Nothing)
-            .unwrap();
-        FetchService::fetch(request, callback)
-    }
-
     fn colorize(&self, code: &str) -> String {
-        info!("Raw: {}", code);
-        let m = unsafe { highlight(code, "rust") };
+        let m = highlight(code);
         if let Some(res) = m.as_string() {
             info!("raw_html: {}", &res);
             res
@@ -188,6 +131,5 @@ impl SlidesModel {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Prism)]
-    fn highlight(html: &str, lang: &str) -> JsValue;
+    fn highlight(html: &str) -> JsValue;
 }
