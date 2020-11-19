@@ -1,4 +1,3 @@
-
 use yew::prelude::*;
 pub struct HomeModel {}
 pub enum HomeMsg {}
@@ -24,5 +23,9 @@ impl Component for HomeModel {
                 </div>
             </div>
         }
+    }
+
+    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
+        false
     }
 }

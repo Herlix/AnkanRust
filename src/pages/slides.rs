@@ -1,9 +1,7 @@
-
 use log::info;
-use stdweb::js;
-use stdweb::web::document;
-use stdweb::web::event::{IKeyboardEvent, KeyUpEvent};
-use stdweb::web::Node;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsValue;
+use web_sys::{KeyboardEvent, Node};
 use yew::services::fetch::{FetchTask, Request, Response};
 use yew::services::keyboard::{KeyListenerHandle, KeyboardService};
 use yew::services::FetchService;
@@ -19,7 +17,6 @@ const MAX_COUNT: usize = 29;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct SlidesProps {
-    #[props(required)]
     pub number: usize,
 }
 
@@ -28,8 +25,7 @@ pub struct SlidesModel {
     router: Box<dyn Bridge<RouteAgent>>,
     link: ComponentLink<Self>,
     handler: KeyListenerHandle,
-    ft: Option<FetchTask>,
-    fetch_service: FetchService,
+    ft: Option<Result<FetchTask, anyhow::Error>>,
     fetching: bool,
     data: Option<String>,
 }
@@ -46,37 +42,28 @@ impl Component for SlidesModel {
     type Properties = SlidesProps;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let handler = KeyboardService::register_key_up(
-            &document().body().unwrap(),
-            link.callback(|x: KeyUpEvent| match x.key().as_str() {
-                "ArrowLeft" => SlideMsg::Left,
-                "ArrowRight" => SlideMsg::Right,
-                _ => SlideMsg::NoOp,
-            }),
-        );
-        SlidesModel {
+        let window: web_sys::Window = web_sys::window().unwrap();
+        let document = window.document().unwrap();
+
+        let callback = link.callback(|x: KeyboardEvent| match x.key().as_str() {
+            "ArrowLeft" => SlideMsg::Left,
+            "ArrowRight" => SlideMsg::Right,
+            _ => SlideMsg::NoOp,
+        });
+
+        let handler = KeyboardService::register_key_press(&document, callback);
+
+        let mut res = SlidesModel {
             props,
             router: RouteAgent::bridge(link.callback(|_| SlideMsg::NoOp)),
             link,
             handler,
             data: None,
             ft: None,
-            fetch_service: FetchService::new(),
             fetching: false,
-        }
-    }
-
-    fn mounted(&mut self) -> ShouldRender {
-        info!("Handler: {:?}", self.handler);
-        self.ft = Some(self.fetch_slide(self.props.number));
-        self.colorize(
-            r#"
-fn main() {
-    let m = "Hello World!";
-    println!("{}", m);
-}"#,
-        );
-        false
+        };
+        res.ft = Some(res.fetch_slide(res.props.number));
+        res
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -88,7 +75,7 @@ fn main() {
                         self.data = Some(s);
                         self.router
                             .send(RouteRequest::ChangeRouteNoBroadcast(Route::from(format!(
-                                "/slides?num={}",
+                                "/slides/{}",
                                 self.props.number
                             ))));
                     }
@@ -130,6 +117,21 @@ fn main() {
             </div>
         }
     }
+
+    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
+        self.colorize(
+            r#"
+        fn main() {
+            let m = "Hello World!";
+            println!("{}", m);
+        }"#,
+        );
+
+        // Should only return "true" if new properties are different to
+        // previously received properties.
+        // This component has no properties so we will always return "false".
+        false
+    }
 }
 
 impl SlidesModel {
@@ -139,14 +141,25 @@ impl SlidesModel {
         } else {
             "<div><p>Data hasn't fetched yet.</p></div>"
         };
-        let node = Node::from_html(v).expect("Could not generate Html object");
-        VNode::VRef(node)
+
+        let js_svg = {
+            let div = web_sys::window()
+                .unwrap()
+                .document()
+                .unwrap()
+                .create_element("div")
+                .unwrap();
+            div.set_inner_html(v);
+            div
+        };
+
+        VNode::VRef(Node::from(js_svg))
     }
 
-    fn fetch_slide(&mut self, slide: usize) -> FetchTask {
+    fn fetch_slide(&mut self, slide: usize) -> Result<FetchTask, anyhow::Error> {
         let callback =
             self.link
-                .callback(move |response: Response<Result<String, failure::Error>>| {
+                .callback(move |response: Response<Result<String, anyhow::Error>>| {
                     let (meta, data) = response.into_parts();
                     // info!("META: {:?}, {:?}", meta, data);
                     if meta.status.is_success() {
@@ -158,21 +171,23 @@ impl SlidesModel {
         let request = Request::get(format!("/api/slide/page_{}.html", slide))
             .body(Nothing)
             .unwrap();
-        self.fetch_service.fetch(request, callback)
+        FetchService::fetch(request, callback)
     }
 
     fn colorize(&self, code: &str) -> String {
         info!("Raw: {}", code);
-        let raw_html = (js! {
-            return Prism.highlight(@{code}, Prism.languages.rust);
-        })
-        .into_string();
-
-        if let Some(res) = raw_html {
+        let m = unsafe { highlight(code, "rust") };
+        if let Some(res) = m.as_string() {
             info!("raw_html: {}", &res);
             res
         } else {
             "Hello non-js world!".to_string()
         }
     }
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = Prism)]
+    fn highlight(html: &str, lang: &str) -> JsValue;
 }

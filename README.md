@@ -1,34 +1,14 @@
-# rust_talk
+# Rust talk - A simple presentation
 
-Hi! 
+### This is a wasm application that uses Yew as its framework. 
 
-This is the repo for my "Why Rust?" talk held @ FooCafe in Malmö Sweden in February 2020.
-
-Wasm frontend: https://github.com/yewstack
-
-My goal is to have this website as slides instead of powerpoint or something similar. 
-Why make life easy? ;) 
-
-
-## 🚴 Usage
-
-### 🔬 Build & Serve locally with
-
+#### To build and run I used https://crates.io/crates/trunk
+to install: 
+```bash
+cargo install trunk
+cargo install wasm-bindgen-cli
 ```
-yarn && yarn build && yarn start:dev
+to run: 
+```bash
+trunk serve
 ```
-
-### ☝️ Deployment
-
-```
-cargo web deploy
-```
-
-## 🔋 Batteries Included
-
-* [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
-  between WebAssembly and JavaScript.
-* [`console_error_panic_hook`](https://github.com/rustwasm/console_error_panic_hook)
-  for logging panic messages to the developer console.
-* [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
-  for small code size.

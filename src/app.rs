@@ -1,13 +1,11 @@
-mod components;
-
-use crate::app::components::home::HomeModel;
-use crate::app::components::slides::SlidesModel;
+use crate::pages::home::HomeModel;
+use crate::pages::slides::SlidesModel;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
 #[derive(Debug, Switch, Clone)]
 enum AppRoute {
-    #[to = "/slides?num={n}"]
+    #[to = "/slides/{n}"]
     Slides(usize),
     #[to = "/"]
     Home,
@@ -24,6 +22,10 @@ impl Component for AppModel {
     }
 
     fn update(&mut self, _: Self::Message) -> ShouldRender {
+        true
+    }
+
+    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
         false
     }
 
