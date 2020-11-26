@@ -6,7 +6,7 @@ pub struct Code<'a> {
 
 #[derive(Clone, PartialEq)]
 pub struct Slide<'a> {
-    pub images: &'a [&'a str],
+    pub images: &'a [(&'a str, &'a str)],
     pub code: Option<Code<'a>>,
     pub text: Option<&'a str>,
     pub title: &'a str,
@@ -15,17 +15,20 @@ pub struct Slide<'a> {
 
 pub const SLIDES: &'static [Slide<'static>] = &[
     Slide {
-        images: &["", ""],
+        images: &[
+            ("/images/ferris_original.svg", "Ferris"),
+            ("/images/logo_rust.svg", "Rust logo"),
+        ],
         code: None,
-        text: None,
-        title: "[0] Welcome",
+        text: Some("One shall understand at the end of this talk"),
+        title: "Welcome",
         slug: "FirstAndForMost",
     },
     Slide {
-        images: &["", ""],
+        images: &[("/images/ferris_original.svg", "Ferris")],
         code: None,
         text: None,
-        title: "[1] Welcome",
-        slug: "SecondAndForMost",
+        title: "Who is using rust?",
+        slug: "UsingRust",
     },
 ];

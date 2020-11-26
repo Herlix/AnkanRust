@@ -93,7 +93,9 @@ impl AppModel {
         html! {
             <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
                 <div class="navbar-brand">
-                    <h1 class="navbar-item is-size-3">{ "Yew Blog" }</h1>
+                <AppAnchor classes="navbar-item is-size-3" route=AppRoute::Home>
+                    {"RustForLife"}
+                </AppAnchor>
 
                     <a role="button"
                         class=("navbar-burger", "burger", active_class)

@@ -83,8 +83,22 @@ impl Component for SlidesModel {
     }
 
     fn view(&self) -> Html {
+        let images: Vec<Html> = self
+            .props
+            .slide
+            .images
+            .iter()
+            .map(|x| {
+                html! {
+                    <img src={x.0} alt={x.1} class="ferris-main" />
+                }
+            })
+            .collect();
         html! {
             <>
+            <p>{ self.props.slide.title }</p>
+            <p>{ self.props.slide.text.unwrap_or("Nothing to see here") }</p>
+            {for images}
             </>
             // <div class="slides--wrapper">
             //     { self.view_data() }
@@ -104,7 +118,7 @@ impl Component for SlidesModel {
         // Should only return "true" if new properties are different to
         // previously received properties.
         // This component has no properties so we will always return "false".
-        false
+        true
     }
 
     fn rendered(&mut self, _first_render: bool) {}
