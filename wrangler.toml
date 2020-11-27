@@ -1,9 +1,17 @@
-name = "ankan-rust"
 type = "webpack"
-account_id = ""
+name = "dev-rust"
+account_id = "b49d66d29d1c0a90a268b45bc3cce858"
+zone_id = "6db4a31ca69842edd00ed1d171645ae0"
+route = "https://dev-rust.kvarteretankan13.online/*"
+vars = { ENVIRONMENT = "dev" }
 workers_dev = true
-route = ""
-zone_id = ""
 
 [site]
-bucket = "./__dist__"
+bucket = "./dist"
+entry-point = "workers-site"
+
+[env.production]
+name = "rust"
+vars = { ENVIRONMENT = "production" }
+route = "https://rust.kvarteretankan13.online/*"
+workers_dev = false

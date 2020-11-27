@@ -21,6 +21,15 @@ jobs:
       - name: Install Wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
+      - name: Install wasm-bindgen-cli
+        run: cargo install wasm-bindgen-cli
+
+      - name: Install Trunk
+        run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VERION}/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+      - name: Install Binaryen
+        run: sudo apt install Binaryen -y
+
       - name: Install Clippy
         run: rustup component add clippy
 
@@ -39,5 +48,5 @@ jobs:
       - name: Wasm test Chrome
         run: wasm-pack test --chrome
 
-      - name: Clean & Package
-        run: rm -rf __dist__ && npm run build
+      - name: Clean & Build
+        run: ./trunk clean && ./trunk build --release
