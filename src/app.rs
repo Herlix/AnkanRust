@@ -6,7 +6,7 @@ use crate::{
     slides_data::SLIDES,
     switch::{AppAnchor, AppRoute, AppRouter},
 };
-use yew::prelude::*;
+use yew::{prelude::*, services::ConsoleService};
 use yew_router::{prelude::*, switch::Permissive};
 
 pub enum Msg {
@@ -54,20 +54,6 @@ impl Component for AppModel {
 }
 
 impl AppModel {
-    fn get_footer(&self) -> Html {
-        html! {
-            <footer class="footer">
-                <div class="content has-text-centered">
-                    { "Powered by " }
-                    <a href="https://yew.rs">{ "Yew" }</a>
-                    { " using " }
-                    <a href="https://bulma.io">{ "Bulma" }</a>
-                    { " and images from " }
-                    <a href="https://unsplash.com">{ "Unsplash" }</a>
-                </div>
-            </footer>
-        }
-    }
     fn get_nav(&self) -> Html {
         let Self {
             ref link,
@@ -118,7 +104,7 @@ impl AppModel {
                                 { "Slides" }
                             </a>
                             <div class="navbar-dropdown">
-                               { for pages }
+                                { for pages }
                             </div>
                         </div>
                     </div>
@@ -138,12 +124,29 @@ impl AppModel {
         }
     }
 
+    fn get_footer(&self) -> Html {
+        html! {
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    { "Powered by " }
+                    <a href="https://yew.rs">{ "Yew" }</a>
+                    { " using " }
+                    <a href="https://bulma.io">{ "Bulma" }</a>
+                    { " and images from " }
+                    <a href="https://unsplash.com">{ "Unsplash" }</a>
+                </div>
+            </footer>
+        }
+    }
+
     fn switch(switch: UrlSwitch) -> Html {
         match switch.route() {
             AppRoute::Home => {
+                ConsoleService::info("Switch to home".into());
                 html! { <HomeModel/> }
             }
             AppRoute::SlidesNumber(n) => {
+                ConsoleService::info("SlidesNumber");
                 if let Some(v) = SLIDES.get(n) {
                     html! { <SlidesModel slide=v /> }
                 } else {
@@ -151,6 +154,7 @@ impl AppModel {
                 }
             }
             AppRoute::SlidesName(n) => {
+                ConsoleService::info("SlidesName");
                 if let Some(v) = SLIDES.iter().find(|x| x.slug.to_string() == n) {
                     html! { <SlidesModel slide=v /> }
                 } else {
@@ -158,6 +162,7 @@ impl AppModel {
                 }
             }
             AppRoute::PageNotFound(Permissive(route)) => {
+                ConsoleService::info("NotFound");
                 html! { <PageNotFound route=route /> }
             }
         }

@@ -1,8 +1,10 @@
-use log::info;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsValue;
 use web_sys::KeyboardEvent;
-use yew::services::keyboard::{KeyListenerHandle, KeyboardService};
+use yew::services::{
+    keyboard::{KeyListenerHandle, KeyboardService},
+    ConsoleService,
+};
 use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::{agent::RouteRequest, prelude::*};
 
@@ -90,7 +92,7 @@ impl Component for SlidesModel {
             .iter()
             .map(|x| {
                 html! {
-                    <img src={x.0} alt={x.1} class="ferris-main" />
+                    <img src={x.path} alt={x.alt} class="ferris-main" />
                 }
             })
             .collect();
@@ -120,10 +122,6 @@ impl Component for SlidesModel {
         // This component has no properties so we will always return "false".
         true
     }
-
-    fn rendered(&mut self, _first_render: bool) {}
-
-    fn destroy(&mut self) {}
 }
 
 impl SlidesModel {
@@ -135,7 +133,7 @@ impl SlidesModel {
     fn colorize(&self, code: &str) -> String {
         let m = highlight(code);
         if let Some(res) = m.as_string() {
-            info!("raw_html: {}", &res);
+            ConsoleService::info(format!("raw_html: {}", &res).as_str());
             res
         } else {
             "Hello non-js world!".to_string()

@@ -1,6 +1,4 @@
 #![recursion_limit = "512"]
-use log::Level;
-use web_logger::Config;
 
 mod app;
 mod components;
@@ -19,6 +17,5 @@ pub fn main() {
     #[cfg(feature = "console_error_panic_hook")]
     console_error_panic_hook::set_once();
 
-    web_logger::custom_init(Config { level: Level::Info });
     yew::start_app::<app::AppModel>();
 }

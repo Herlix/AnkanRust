@@ -1,4 +1,4 @@
-# Rust talk - A simple presentation
+# Welcome to my humble Rust talk
 
 ### This is a wasm application that uses Yew as its framework. 
 
