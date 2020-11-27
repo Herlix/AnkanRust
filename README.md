@@ -4,6 +4,8 @@
 
 ![Rust](https://github.com/Herlix/AnkanRust/workflows/Rust/badge.svg)
 
+Homepage: https://rust.kvarteretankan13.online/ 
+
 #### To build and run I used https://crates.io/crates/trunk
 to install: 
 ```bash
@@ -14,3 +16,7 @@ to run:
 ```bash
 trunk serve
 ```
+
+
+### To deploy I use CloudFlares Wrangler 
+#### the app is run on exclusively CloudFlare Workers
