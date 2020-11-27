@@ -8,22 +8,24 @@ use yew::services::{
 use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::{agent::RouteRequest, prelude::*};
 
-use crate::{
-    slides_data::{Slide, SLIDES},
-    switch::AppRoute,
-};
+use crate::{slides_data::Slide, slides_data::SLIDES, switch::AppRoute};
 
+#[derive(Clone, PartialEq)]
+pub enum SlideId {
+    Str(String),
+    Num(usize),
+}
 #[derive(Clone, PartialEq, Properties)]
 pub struct SlidesProps {
-    pub slide: Slide<'static>,
+    pub slide: SlideId,
 }
 
 pub struct SlidesModel {
-    props: SlidesProps,
+    slide: &'static Slide<'static>,
     number: usize,
     route_dispatcher: RouteAgentDispatcher,
     _link: ComponentLink<Self>,
-    _keyboard_handle: KeyListenerHandle,
+    //_keyboard_handle: KeyListenerHandle,
 }
 
 pub enum SlideMsg {
@@ -37,28 +39,38 @@ impl Component for SlidesModel {
     type Properties = SlidesProps;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let window: web_sys::Window = web_sys::window().unwrap();
-        let document = window.document().unwrap();
+        ConsoleService::log("Got into slide");
 
-        let callback = link.callback(|x: KeyboardEvent| match x.key().as_str() {
-            "ArrowLeft" => SlideMsg::Left,
-            "ArrowRight" => SlideMsg::Right,
-            _ => SlideMsg::NoOp,
-        });
+        // let window: web_sys::Window = web_sys::window().unwrap();
+        // let document = window.document().unwrap();
 
-        let keyboard_handle = KeyboardService::register_key_press(&document, callback);
-        let number = SLIDES
-            .iter()
-            .position(|x| x.slug == props.slide.slug)
-            .unwrap_or(0);
+        // let callback = link.callback(|x: KeyboardEvent| match x.key().as_str() {
+        //     "ArrowLeft" => SlideMsg::Left,
+        //     "ArrowRight" => SlideMsg::Right,
+        //     _ => SlideMsg::NoOp,
+        // });
+
+        // let keyboard_handle = KeyboardService::register_key_press(&document, callback);
+
+        let number = match &props.slide {
+            SlideId::Str(s) => SLIDES.iter().position(|x| x.slug == s).unwrap_or(0),
+            SlideId::Num(n) => {
+                if n >= &SLIDES.len() {
+                    0
+                } else {
+                    n.clone()
+                }
+            }
+        };
+
         let mut result = SlidesModel {
-            props,
             number,
+            slide: SLIDES.get(number).unwrap(),
             route_dispatcher: RouteAgentDispatcher::new(),
             _link: link,
-            _keyboard_handle: keyboard_handle,
+            // _keyboard_handle: keyboard_handle,
         };
-        result.update_route();
+        // result.update_route();
         result
     }
 
@@ -67,7 +79,7 @@ impl Component for SlidesModel {
             SlideMsg::Left => {
                 if self.number > 0 {
                     self.number -= 1;
-                    self.props.slide = SLIDES.get(self.number).unwrap().clone();
+                    self.slide = SLIDES.get(self.number).unwrap();
                     self.update_route();
                 }
                 true
@@ -75,7 +87,7 @@ impl Component for SlidesModel {
             SlideMsg::Right => {
                 if self.number != SLIDES.len() {
                     self.number += 1;
-                    self.props.slide = SLIDES.get(self.number).unwrap().clone();
+                    self.slide = SLIDES.get(self.number).unwrap();
                     self.update_route();
                 }
                 true
@@ -86,7 +98,6 @@ impl Component for SlidesModel {
 
     fn view(&self) -> Html {
         let images: Vec<Html> = self
-            .props
             .slide
             .images
             .iter()
@@ -98,11 +109,11 @@ impl Component for SlidesModel {
             .collect();
         html! {
             <>
-            <p>{ self.props.slide.title }</p>
-            <p>{ self.props.slide.text.unwrap_or("Nothing to see here") }</p>
-            {for images}
+                <p>{ self.slide.title }</p>
+                <p>{ self.slide.text.unwrap_or("Nothing to see here") }</p>
+                {for images}
 
-            {self.colorize("println!(\"Hello world\"!);")}
+                {self.colorize("println!(\"Hello world\"!);")}
             </>
             // <div class="slides--wrapper">
             //     { self.view_data() }
@@ -128,7 +139,7 @@ impl Component for SlidesModel {
 
 impl SlidesModel {
     fn update_route(&mut self) {
-        let route = AppRoute::SlidesName(self.props.slide.slug.to_string());
+        let route = AppRoute::SlidesName(self.slide.slug.to_string());
         self.route_dispatcher
             .send(RouteRequest::ChangeRoute(route.into_route()));
     }

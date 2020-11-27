@@ -1,15 +1,15 @@
-#[derive(Clone, PartialEq)]
+#[derive(PartialEq)]
 pub struct Code<'a> {
     pub value: &'a str,
     pub message: Option<&'a str>,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(PartialEq)]
 pub struct Img<'a> {
     pub path: &'a str,
     pub alt: &'a str,
 }
-#[derive(Clone, PartialEq)]
+#[derive(PartialEq)]
 pub struct Slide<'a> {
     pub images: &'a [Img<'a>],
     pub code: Option<Code<'a>>,
@@ -22,11 +22,11 @@ pub const SLIDES: &[Slide<'static>] = &[
     Slide {
         images: &[
             Img {
-                path: "/images/ferris_original.svg",
+                path: "images/ferris_original.svg",
                 alt: "Ferris",
             },
             Img {
-                path: "/images/logo_rust.svg",
+                path: "images/logo_rust.svg",
                 alt: "Rust logo",
             },
         ],
@@ -37,7 +37,7 @@ pub const SLIDES: &[Slide<'static>] = &[
     },
     Slide {
         images: &[Img {
-            path: "/images/ferris_original.svg",
+            path: "images/ferris_original.svg",
             alt: "Ferris",
         }],
         code: None,

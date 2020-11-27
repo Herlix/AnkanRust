@@ -24,8 +24,8 @@ jobs:
       - name: Install Clippy
         run: rustup component add clippy
 
-      # - name: Install Trunk
-      #   run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VERION}/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+      - name: Npm install
+        run: npm i
 
       - name: Run Clippy
         run: cargo clippy
@@ -39,5 +39,5 @@ jobs:
       - name: Wasm test Chrome
         run: wasm-pack test --chrome
 
-      - name: Node?
-        run: npm -v
+      - name: Clean & Package
+        run: rm -rf __dist__ && npm run build

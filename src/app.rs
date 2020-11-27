@@ -1,5 +1,7 @@
 use crate::{
-    pages::home::HomeModel, pages::not_found::PageNotFound, pages::slides::SlidesModel,
+    pages::home::HomeModel,
+    pages::not_found::PageNotFound,
+    pages::slides::{SlideId, SlidesModel},
     switch::UrlSwitch,
 };
 use crate::{
@@ -140,29 +142,20 @@ impl AppModel {
     }
 
     fn switch(switch: UrlSwitch) -> Html {
-        match switch.route() {
+        let route = switch.route();
+        ConsoleService::info(format!("Switching to {:?}", &route).as_str());
+
+        match route {
             AppRoute::Home => {
-                ConsoleService::info("Switch to home");
                 html! { <HomeModel/> }
             }
             AppRoute::SlidesNumber(n) => {
-                ConsoleService::info("SlidesNumber");
-                if let Some(v) = SLIDES.get(n) {
-                    html! { <SlidesModel slide=v /> }
-                } else {
-                    html! { <PageNotFound route=Some(format!("/slides/{}", n)) /> }
-                }
+                html! { <SlidesModel slide=SlideId::Num(n) /> }
             }
             AppRoute::SlidesName(n) => {
-                ConsoleService::info("SlidesName");
-                if let Some(v) = SLIDES.iter().find(|x| *x.slug == n) {
-                    html! { <SlidesModel slide=v /> }
-                } else {
-                    html! { <PageNotFound route=Some(format!("/slides/{}", n)) /> }
-                }
+                html! { <SlidesModel slide=SlideId::Str(n) /> }
             }
             AppRoute::PageNotFound(Permissive(route)) => {
-                ConsoleService::info("NotFound");
                 html! { <PageNotFound route=route /> }
             }
         }

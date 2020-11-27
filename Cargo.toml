@@ -9,6 +9,9 @@ license = "MIT/Apache-2.0"
 readme = "README.md"
 description = "A simple website for a Rust pressentation"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [profile.release]
 # less code to include into binary
 panic = 'abort' 

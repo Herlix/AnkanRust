@@ -1,4 +1,5 @@
-#![recursion_limit = "512"]
+#![recursion_limit = "1024"]
+use wasm_bindgen::prelude::*;
 
 mod app;
 mod components;
@@ -13,6 +14,7 @@ mod switch;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 // This is the entry point for the web app
+#[wasm_bindgen(start)]
 pub fn main() {
     #[cfg(feature = "console_error_panic_hook")]
     console_error_panic_hook::set_once();

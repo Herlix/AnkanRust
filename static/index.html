@@ -6,19 +6,16 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="https://www.rust-lang.org/static/images/rust-logo-blk.svg">
     <title>Rust Talk</title>
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
 
-    <base data-trunk-public-url />
-    <link data-trunk rel="sass" href="index.scss" />
-    <link data-trunk rel="copy-file" href="static/manifest.json" crossorigin="use-credentials">
-    <link data-trunk rel="copy-dir" href="static/api" crossorigin="use-credentials">
-    <link data-trunk rel="copy-dir" href="static/images" crossorigin="use-credentials">
-    <link data-trunk rel="copy-dir" href="static/assets/" crossorigin="use-credentials">
+    <link rel="stylesheet" type="text/css" href="/bundle.css">
+    <script src="/bundle.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 
-    <script src="assets/prism.js" data-manual></script>
-    <link rel="stylesheet" type="text/css" href="assets/prism.css">
+    <script src="/assets/prism.js" data-manual></script>
+    <link rel="stylesheet" type="text/css" href="/assets/prism.css">
 
     <script>
         function highlight(code) {

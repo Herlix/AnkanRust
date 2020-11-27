@@ -1,5 +1,8 @@
 use web_sys::Url;
-use yew::virtual_dom::{Transformer, VComp};
+use yew::{
+    services::ConsoleService,
+    virtual_dom::{Transformer, VComp},
+};
 use yew_router::{prelude::*, switch::Permissive};
 
 #[derive(Debug, Switch, Clone)]
@@ -59,6 +62,7 @@ impl Transformer<AppRoute, UrlSwitch> for VComp {
 
 impl Switch for UrlSwitch {
     fn from_route_part<STATE>(part: String, state: Option<STATE>) -> (Option<Self>, Option<STATE>) {
+        ConsoleService::log(format!("Switch: from_route_part {}", part).as_str());
         if let Some(part) = part.strip_prefix(&Self::base_path()) {
             let (route, state) = AppRoute::from_route_part(part.to_owned(), state);
             (route.map(Self), state)
@@ -68,6 +72,7 @@ impl Switch for UrlSwitch {
     }
 
     fn build_route_section<STATE>(self, route: &mut String) -> Option<STATE> {
+        ConsoleService::log(format!("Adding to path {}", route).as_str());
         route.push_str(&Self::base_path());
         self.0.build_route_section(route)
     }
