@@ -28,7 +28,7 @@ jobs:
         run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VERION}/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
       - name: Install Binaryen
-        run: sudo apt install Binaryen -y
+        run: wget -qO- https://github.com/WebAssembly/binaryen/releases/download/version_97/binaryen-version_97-x86_64-linux.tar.gz | tar -xzf-
 
       - name: Install Clippy
         run: rustup component add clippy
@@ -50,3 +50,6 @@ jobs:
 
       - name: Clean & Build
         run: ./trunk clean && ./trunk build --release
+
+      - name: Optimize output
+        run: find dist -iname '*.wasm' -exec mv {} ankan.wasm \; -exec binaryen-version_97/bin/wasm-opt -Oz -o {} ankan.wasm \;
