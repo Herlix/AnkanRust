@@ -23,13 +23,13 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: Install wasm-bindgen-cli
-        run: wget -qO- https://github.com/rustwasm/wasm-bindgen/releases/download/${BINDGEN_VER}/wasm-bindgen-${BINDGEN_VER}-x86_64-unknown-linux-musl.tar.gz | tar -xzf- && sudo mv wasm-bindgen-${BINDGEN_VER}-x86_64-unknown-linux-musl/* /bin/
+        run: wget -qO- https://github.com/rustwasm/wasm-bindgen/releases/download/${BINDGEN_VER}/wasm-bindgen-${BINDGEN_VER}-x86_64-unknown-linux-musl.tar.gz | sudo tar -xzf- --strip=1 -C /bin/
 
       - name: Install Trunk
-        run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+        run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz | sudo tar -xzf-
 
       - name: Install Binaryen
-        run: wget -qO- https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VER}/binaryen-${BINARYEN_VER}-x86_64-linux.tar.gz | tar -xzf-
+        run: wget -qO- https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VER}/binaryen-${BINARYEN_VER}-x86_64-linux.tar.gz | sudo tar -xzf- --strip=1 -C /bin/
 
       - name: Install Clippy
         run: rustup component add clippy
@@ -53,4 +53,4 @@ jobs:
         run: ./trunk clean && ./trunk build --release
 
       - name: Optimize output
-        run: find dist -iname '*.wasm' -exec mv {} ankan.wasm \; -exec binaryen-${BINARYEN_VER}/bin/wasm-opt -Oz -o {} ankan.wasm \;
+        run: find dist -iname '*.wasm' -exec mv {} ankan.wasm \; -exec wasm-opt -Oz -o {} ankan.wasm \;
