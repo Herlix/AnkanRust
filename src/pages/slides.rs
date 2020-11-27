@@ -22,8 +22,8 @@ pub struct SlidesModel {
     props: SlidesProps,
     number: usize,
     route_dispatcher: RouteAgentDispatcher,
-    link: ComponentLink<Self>,
-    keyboard_handle: KeyListenerHandle,
+    _link: ComponentLink<Self>,
+    _keyboard_handle: KeyListenerHandle,
 }
 
 pub enum SlideMsg {
@@ -55,8 +55,8 @@ impl Component for SlidesModel {
             props,
             number,
             route_dispatcher: RouteAgentDispatcher::new(),
-            link,
-            keyboard_handle,
+            _link: link,
+            _keyboard_handle: keyboard_handle,
         };
         result.update_route();
         result
@@ -66,7 +66,7 @@ impl Component for SlidesModel {
         match msg {
             SlideMsg::Left => {
                 if self.number > 0 {
-                    self.number = self.number - 1;
+                    self.number -= 1;
                     self.props.slide = SLIDES.get(self.number).unwrap().clone();
                     self.update_route();
                 }
@@ -74,7 +74,7 @@ impl Component for SlidesModel {
             }
             SlideMsg::Right => {
                 if self.number != SLIDES.len() {
-                    self.number = self.number + 1;
+                    self.number += 1;
                     self.props.slide = SLIDES.get(self.number).unwrap().clone();
                     self.update_route();
                 }
@@ -101,6 +101,8 @@ impl Component for SlidesModel {
             <p>{ self.props.slide.title }</p>
             <p>{ self.props.slide.text.unwrap_or("Nothing to see here") }</p>
             {for images}
+
+            {self.colorize("println!(\"Hello world\"!);")}
             </>
             // <div class="slides--wrapper">
             //     { self.view_data() }

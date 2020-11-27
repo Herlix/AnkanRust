@@ -18,7 +18,7 @@ pub struct Slide<'a> {
     pub slug: &'a str,
 }
 
-pub const SLIDES: &'static [Slide<'static>] = &[
+pub const SLIDES: &[Slide<'static>] = &[
     Slide {
         images: &[
             Img {

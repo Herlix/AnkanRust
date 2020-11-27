@@ -1,0 +1,43 @@
+name: Rust
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  TRUNK_VERION: 'v0.7.4'
+
+jobs:
+  BuildAndTest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Install Clippy
+        run: rustup component add clippy
+
+      # - name: Install Trunk
+      #   run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VERION}/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+      - name: Run Clippy
+        run: cargo clippy
+
+      - name: Cargo test
+        run: cargo test --verbose
+
+      - name: Wasm test Firefox
+        run: wasm-pack test --firefox
+
+      - name: Wasm test Chrome
+        run: wasm-pack test --chrome
+
+      - name: Node?
+        run: npm -v

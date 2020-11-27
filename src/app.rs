@@ -142,7 +142,7 @@ impl AppModel {
     fn switch(switch: UrlSwitch) -> Html {
         match switch.route() {
             AppRoute::Home => {
-                ConsoleService::info("Switch to home".into());
+                ConsoleService::info("Switch to home");
                 html! { <HomeModel/> }
             }
             AppRoute::SlidesNumber(n) => {
@@ -155,7 +155,7 @@ impl AppModel {
             }
             AppRoute::SlidesName(n) => {
                 ConsoleService::info("SlidesName");
-                if let Some(v) = SLIDES.iter().find(|x| x.slug.to_string() == n) {
+                if let Some(v) = SLIDES.iter().find(|x| *x.slug == n) {
                     html! { <SlidesModel slide=v /> }
                 } else {
                     html! { <PageNotFound route=Some(format!("/slides/{}", n)) /> }

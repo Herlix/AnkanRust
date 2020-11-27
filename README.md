@@ -2,6 +2,8 @@
 
 ### This is a wasm application that uses Yew as its framework. 
 
+![Rust](https://github.com/Herlix/AnkanRust/workflows/Rust/badge.svg)
+
 #### To build and run I used https://crates.io/crates/trunk
 to install: 
 ```bash
