@@ -1,10 +1,11 @@
 type = "webpack"
 name = "dev-rust"
 account_id = ""
-zone_id = ""
+zone_id = "6db4a31ca69842edd00ed1d171645ae0"
 route = "https://dev-rust.kvarteretankan13.online/*"
-vars = { ENVIRONMENT = "dev" }
+vars = { DB = "dev_rust" }
 workers_dev = true
+kv_namespaces = [  { binding = "dev_rust", id = "4e15218e20e3402aaacb8ee11d7d389f" }]
 
 [site]
 bucket = "./dist"
@@ -12,6 +13,7 @@ entry-point = "workers-site"
 
 [env.production]
 name = "rust"
-vars = { ENVIRONMENT = "production" }
+vars = { DB = "rust" }
 route = "https://rust.kvarteretankan13.online/*"
 workers_dev = false
+kv_namespaces = [  { binding = "rust", id = "7f9f33974c5548169c330236ad109be7" }]
