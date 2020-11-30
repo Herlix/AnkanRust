@@ -1,7 +1,7 @@
 type = "webpack"
 name = "dev-rust"
 account_id = ""
-zone_id = "6db4a31ca69842edd00ed1d171645ae0"
+zone_id = ""
 route = "https://dev-rust.kvarteretankan13.online/*"
 vars = { ENVIRONMENT = "dev" }
 workers_dev = true
