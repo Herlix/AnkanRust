@@ -61,4 +61,4 @@ jobs:
         run: find dist -iname '*.wasm' -exec mv {} ankan.wasm \; -exec wasm-opt -Oz -o {} ankan.wasm \;
 
       - name: Deploy to dev
-        run: wrangler publish
+        run: wrangler publish -o json
