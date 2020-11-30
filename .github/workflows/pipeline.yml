@@ -8,9 +8,11 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  TRUNK_VERSION: 'v0.7.4'
+  TRUNK_VER: 'v0.7.4'
   BINARYEN_VER: 'version_97'
   BINDGEN_VER: '0.2.68'
+  WRANGLER_VER: 'v1.12.2'
+
 jobs:
   BuildAndTest:
     runs-on: ubuntu-latest
@@ -26,13 +28,16 @@ jobs:
         run: wget -qO- https://github.com/rustwasm/wasm-bindgen/releases/download/${BINDGEN_VER}/wasm-bindgen-${BINDGEN_VER}-x86_64-unknown-linux-musl.tar.gz | sudo tar -xzf- --strip=1 -C /bin/
 
       - name: Install Trunk
-        run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz | sudo tar -xzf-
+        run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VER}/trunk-x86_64-unknown-linux-gnu.tar.gz | sudo tar -xzf-
 
       - name: Install Binaryen
         run: wget -qO- https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VER}/binaryen-${BINARYEN_VER}-x86_64-linux.tar.gz | sudo tar -xzf- --strip=1 -C /bin/
 
       - name: Install Clippy
         run: rustup component add clippy
+
+      - name: Install Wrangler
+        run: wget -qO- https://github.com/cloudflare/wrangler/releases/download/${WRANGLER_VER}/wrangler-${WRANGLER_VER}-x86_64-unknown-linux-musl.tar.gz | sudo tar -xzf- --strip=1 -C /bin/
 
       - name: Npm install
         run: npm i
@@ -53,4 +58,7 @@ jobs:
         run: ./trunk clean && ./trunk build --release
 
       - name: Optimize output
-        run: find dist -iname '*.wasm' -exec mv {} ankan.wasm \; -exec wasm-opt -Oz -o {} ankan.wasm \;
+        run: find dist -iname '*.wasm' -exec mv {} ankan.wasm \; -exec wasm-opt -Oz -o {} ankan.wasm \; && rm dist/ankan.wasm
+
+      - name: Deploy to dev
+        run: wrangler publish
