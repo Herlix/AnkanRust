@@ -1,6 +1,6 @@
 type = "webpack"
 name = "dev-rust"
-account_id = "b49d66d29d1c0a90a268b45bc3cce858"
+account_id = ""
 zone_id = "6db4a31ca69842edd00ed1d171645ae0"
 route = "https://dev-rust.kvarteretankan13.online/*"
 vars = { ENVIRONMENT = "dev" }
