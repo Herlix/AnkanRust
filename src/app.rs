@@ -70,10 +70,10 @@ impl AppModel {
             .map(|x| {
                 html! {
                     <a class="navbar-item">
-                    <AppAnchor classes="navbar-item" route=AppRoute::SlidesName(x.slug.to_string())>
-                        { x.title }
-                    </AppAnchor>
-                </a>
+                        <AppAnchor classes="navbar-item" route=AppRoute::SlidesName(x.slug.to_string())>
+                            { x.title }
+                        </AppAnchor>
+                    </a>
                 }
             })
             .collect();
@@ -117,12 +117,14 @@ impl AppModel {
 
     fn get_main(&self) -> Html {
         html! {
-            <AppRouter
-                render=AppRouter::render(Self::switch)
-                redirect=AppRouter::redirect(|route: Route| {
-                    AppRoute::PageNotFound(Permissive(Some(route.route))).into_switch()
-                })
-            />
+            <div class="hero is-fullheight">
+                <AppRouter
+                    render=AppRouter::render(Self::switch)
+                    redirect=AppRouter::redirect(|route: Route| {
+                        AppRoute::PageNotFound(Permissive(Some(route.route))).into_switch()
+                    })
+                />
+            </div>
         }
     }
 
@@ -150,10 +152,10 @@ impl AppModel {
                 html! { <HomeModel/> }
             }
             AppRoute::SlidesNumber(n) => {
-                html! { <SlidesModel slide=SlideId::Num(n) /> }
+                html! { <SlidesModel id=SlideId::Num(n) /> }
             }
             AppRoute::SlidesName(n) => {
-                html! { <SlidesModel slide=SlideId::Str(n) /> }
+                html! { <SlidesModel id=SlideId::Str(n) /> }
             }
             AppRoute::PageNotFound(Permissive(route)) => {
                 html! { <PageNotFound route=route /> }
