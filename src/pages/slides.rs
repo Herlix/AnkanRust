@@ -1,5 +1,3 @@
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsValue;
 use web_sys::KeyboardEvent;
 use yew::{
     format::Nothing,
@@ -12,7 +10,7 @@ use yew::{
 use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::{agent::RouteRequest, prelude::*};
 
-use crate::{slides_data::Slide, slides_data::SLIDES, switch::AppRoute};
+use crate::{markdown, slides_data::Slide, slides_data::SLIDES, switch::AppRoute};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct SlidesProps {
@@ -50,8 +48,7 @@ pub struct SlidesModel {
     route_dispatcher: RouteAgentDispatcher,
     link: ComponentLink<Self>,
     fetch_task: Option<FetchTask>,
-    fetch_error: Option<String>,
-    markdown: Option<String>,
+    fetch_result: Option<Html>,
     slide: &'static Slide<'static>,
     number: usize,
 }
@@ -73,8 +70,7 @@ impl Component for SlidesModel {
         let (slide, number) = Self::get_slide(&props.id);
         let mut res = SlidesModel {
             fetch_task: None,
-            fetch_error: None,
-            markdown: None,
+            fetch_result: None,
             props,
             number,
             slide,
@@ -107,9 +103,9 @@ impl Component for SlidesModel {
             ReceiveResponse(response) => {
                 match response {
                     Ok(md) => {
-                        self.markdown = Some(md);
+                        self.fetch_result = Some(markdown::generate_html(&md));
                     }
-                    Err(error) => self.fetch_error = Some(error.to_string()),
+                    Err(error) => ConsoleService::log(&error.to_string()),
                 }
                 self.fetch_task = None;
                 true
@@ -120,13 +116,13 @@ impl Component for SlidesModel {
 
     fn view(&self) -> Html {
         html! {
-            <>
-                <p>{ self.slide.title }</p>
-                {self.view_md()}
-                { self.view_fetching() }
-                { self.view_error() }
-                {self.colorize("println!(\"Hello world\"!);")}
-            </>
+
+            <div class={"hero-body"}>
+                <p class={"title"}>{ self.slide.title }</p>
+                <div class={"container"}>
+                    { self.view_result() }
+                </div>
+            </div>
 
 
             // <div class="slides--wrapper">
@@ -163,14 +159,6 @@ impl SlidesModel {
         let route = AppRoute::SlidesName(self.slide.slug.to_string());
         self.route_dispatcher
             .send(RouteRequest::ChangeRoute(route.into_route()));
-    }
-    fn colorize(&self, code: &str) -> String {
-        let m = highlight(code);
-        if let Some(res) = m.as_string() {
-            res
-        } else {
-            "Hello non-js world!".to_string()
-        }
     }
 
     fn get_next(&self, dir: Direction) -> (&'static Slide<'static>, usize) {
@@ -226,32 +214,13 @@ impl SlidesModel {
         self.fetch_task = Some(task);
     }
 
-    fn view_md(&self) -> Html {
-        let res = self
-            .markdown
-            .clone()
-            .unwrap_or("Data not loaded...".to_string());
-        html! {<p> { res } </p>}
-    }
-
-    fn view_fetching(&self) -> Html {
+    fn view_result(&self) -> Html {
         if self.fetch_task.is_some() {
             html! { <p>{ "Fetching data..." }</p> }
         } else {
-            html! { <p></p> }
+            self.fetch_result
+                .clone()
+                .unwrap_or(html! {<p> {"<p>Data not loaded...</p>"} </p>})
         }
     }
-
-    fn view_error(&self) -> Html {
-        if let Some(ref error) = self.fetch_error {
-            html! { <p>{ error.clone() }</p> }
-        } else {
-            html! {}
-        }
-    }
-}
-
-#[wasm_bindgen]
-extern "C" {
-    fn highlight(html: &str) -> JsValue;
 }

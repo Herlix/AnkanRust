@@ -1,6 +1,7 @@
 #![recursion_limit = "1024"]
 mod app;
 mod components;
+mod markdown;
 mod pages;
 mod slides_data;
 mod switch;
